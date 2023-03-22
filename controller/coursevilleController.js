@@ -105,18 +105,61 @@ exports.getProfileInformation = (req, res) => {
 };
 
 // TODO #3.2: Send "GET" request to CV endpoint to get all courses that you enrolled
-exports.getCourses = (req, res) => {
+exports.getCourses = (req, _res) => {
   // You should change the response below.
-  res.send("This route should get all courses that you enrolled.");
-  res.end();
+  const courseReq = https.request(
+    "https://www.mycourseville.com/api/v1/public/get/user/courses",
+    {
+      headers: {
+        Authorization: `Bearer ${req.session.token.access_token}`,
+      },
+    },
+    (res) => {
+      let data = "";
+      res.on("data", (chunk) => {
+        data += chunk;
+      });
+      res.on("end", () => {
+        const profile = JSON.parse(data);
+        _res.send(profile);
+        _res.end();
+      });
+    }
+  );
+  courseReq.on("error", (err) => {
+    console.error(err);
+  });
+  courseReq.end();
 };
 
 // TODO #3.4: Send "GET" request to CV endpoint to get all course assignments based on cv_cid
-exports.getCourseAssignments = (req, res) => {
+exports.getCourseAssignments = (req, _res) => {
   const cv_cid = req.params.cv_cid;
   // You should change the response below.
-  res.send("This route should get all course assignments based on cv_cid.");
-  res.end();
+  const assessmentReq = https.request(
+    "https://www.mycourseville.com/api/v1/public/get/course/assignments?cv_cid=" +
+      cv_cid,
+    {
+      headers: {
+        Authorization: `Bearer ${req.session.token.access_token}`,
+      },
+    },
+    (res) => {
+      let data = "";
+      res.on("data", (chunk) => {
+        data += chunk;
+      });
+      res.on("end", () => {
+        const profile = JSON.parse(data);
+        _res.send(profile);
+        _res.end();
+      });
+    }
+  );
+  assessmentReq.on("error", (err) => {
+    console.error(err);
+  });
+  assessmentReq.end();
 };
 
 // Outstanding #2
