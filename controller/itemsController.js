@@ -16,7 +16,8 @@ exports.getGroupMembers = async (req, res) => {
   };
   try {
     const data = await docClient.send(new ScanCommand(params));
-    res.send(data.Items);
+    console.log(data);
+    res.send(data.Items);//response 
   } catch (err) {
     console.error(err);
     res.status(500).send(err);
@@ -27,7 +28,7 @@ exports.getGroupMembers = async (req, res) => {
 exports.getItems = async (req, res) => {
   // You should change the response below.
   const params = {
-    TableName: process.env.aws_items_table_name,
+    TableName: process.env.aws_items_table_name, //see env
   };
   try {
     const data = await docClient.send(new ScanCommand(params));
@@ -44,15 +45,18 @@ exports.addItem = async (req, res) => {
   const created_date = Date.now();
   const item = { item_id: item_id, ...req.body, created_date: created_date };
 
+  //console.log(item);
+
   // You should change the response below.
   const params = {
     TableName: process.env.aws_items_table_name,
     Item: item,
-  };
+  };//see body in postman
   
   try {
-    const data = await docClient.send(new PutCommand(params));
-    res.send(data)
+    const data = await docClient.send(new PutCommand(params)); //PutCommand
+    res.send(data);
+    console.log(data);
   } catch (err) {
     console.error(err);
     res.status(500).send(err);
